@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Restarting all proxies"
+while read line; do
+    docker container restart "$line"
+done < running_containers.txt
+sleep 1
+echo "Done"
+
