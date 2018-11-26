@@ -5,27 +5,33 @@ useful to isolate network changes (so the host is not affected by the modified
 routing).
 
 This supports directory style (where the certificates are not bundled together in one `.ovpn` file) and those that contains `update-resolv-conf`
+In ./vpn-configs/ directory you can prepare configs for different openvpn proxies for batch start. Each configuration in a separate directory inside ./vpn-configs/.
 
 ## Usage
-
-Preferably, using `start` in this repository:
+At the beginning you have to build local docker image. Simply run:
 ```bash
-start /your/openvpn/directory
+build_image
 ```
 
-`/your/openvpn/directory` should contain *one* OpenVPN `.conf` file. It can reference other certificate files or key files in the same directory.
-
-Alternatively, using `docker run` directly:
-
+Then you can start openvpn socks proxy using `runproxy` in this repository:
 ```bash
-docker run -it --rm --device=/dev/net/tun --cap-add=NET_ADMIN \
-    --name openvpn-client \
-    --volume /your/openvpn/directory/:/etc/openvpn/:ro -p 1081:1080 \
-    kizzx2/openvpn-client-socks
+runproxy /your/openvpn/directory proxy-port
 ```
 
-Then connect to SOCKS proxy through through `local.docker:1081`. For example:
+`/your/openvpn/directory` should contain *one* OpenVPN `.ovpn` file. It can reference other certificate files or key files in the same directory.
+
+Or batch start all proxies from ./vpn-configs/ directory:
+```bash
+runall
+```
+
+Then connect to SOCKS proxy through through `127.0.0.1:<proxy-port>`. For example:
 
 ```bash
-curl --proxy socks5://local.docker:1081 ipinfo.io
+curl --proxy socks5://127.0.0.1:1081 ipinfo.io
+```
+
+At the end you can stop all proxies (if you started them from 'runall' script):
+```bash
+stopall
 ```

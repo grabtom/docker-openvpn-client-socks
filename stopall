@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "Stopping all proxies"
+while read line; do
+    docker container stop "$line"
+done < running_containers.txt
+sleep 1
+> running_containers.txt
+echo "Done"
+

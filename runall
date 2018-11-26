@@ -1,0 +1,10 @@
+#!/bin/bash
+
+port=1081
+
+for dir in ./vpn-configs/*
+do
+    echo "Startng proxy $(basename $dir) -> 127.0.0.1:$port"
+    ./runproxy $dir $port >> running_containers.txt
+    let "port++"
+done
